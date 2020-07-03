@@ -1,0 +1,23 @@
+.text-field {
+  padding: 10px;
+  label {
+    font-weight: 500;
+  }
+  .input-container {
+    padding: 5px 0;
+  }
+  input {
+    font-size: 12px;
+    background: none;
+    padding: 8px;
+    border: 1px solid #dadbda;
+    width: 100%;
+    box-sizing: border-box;
+    color: #868686;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+}
