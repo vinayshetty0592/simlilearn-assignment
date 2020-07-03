@@ -5,7 +5,10 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const confg = require('config');
 
+const api = require('./server/api');
+
 const app = express();
+
 
 app.use([
   bodyParser.json(),
@@ -14,6 +17,8 @@ app.use([
   helmet(),
   morgan('combined')
 ]);
+
+app.use('/api', api);
 
 app.listen(confg.get('PORT'), () => {
   console.log('App Listening on 3001');
