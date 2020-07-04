@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const config = require('config');
+
 const User = require('../models/user');
 
 module.exports = {
@@ -23,5 +26,22 @@ module.exports = {
         `Account exists with ${isEmailError ? 'Email' : 'Mobile number'}.`;
       throw new Error(message);
     }
+  },
+  signToken: (data) => {
+    return jwt.sign(
+      data,
+      config.get('JWT.SECRET_KEY'),
+      { expiresIn: config.get('JWT.EXPIRY') },
+    );
+  },
+  verifyToken: (token) => {
+    return jwt.verify(token, config.get('JWT.SECRET_KEY'));
+  },
+  getUserFromToken: (token) => {
+    if (!token) {
+      return null;
+    }
+    const { user_id } = jwt.verify(token, config.get('JWT.SECRET_KEY'));
+    return User.findById(user_id);
   }
 };
