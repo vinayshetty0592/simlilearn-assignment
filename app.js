@@ -3,26 +3,38 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const confg = require('config');
+const config = require('config');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const api = require('./server/api');
 
 const app = express();
 
+const init = async () => {
+  try {
+    mongoose.connect(config.get('DATABASE_URL'), { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, });
+    mongoose.connection.on('error', error => console.error(error));
 
-app.use([
-  bodyParser.json(),
-  bodyParser.urlencoded({ extended: false }),
-  cookieParser(),
-  helmet(),
-  morgan('combined')
-]);
+    app.use([
+      bodyParser.json(),
+      bodyParser.urlencoded({ extended: false }),
+      cookieParser(),
+      helmet(),
+      morgan('combined')
+    ]);
 
-app.use('/api', api);
-app.use('/static', express.static(path.join(__dirname, 'build/static')));
-app.use('/*', express.static(path.join(__dirname, 'build')));
+    app.use('/api', api);
+    app.use('/static', express.static(path.join(__dirname, 'build/static')));
+    app.use('/*', express.static(path.join(__dirname, 'build')));
 
-app.listen(confg.get('PORT'), () => {
-  console.log('App Listening on 3001');
-});
+    app.listen(config.get('PORT'), () => {
+      console.log('App Listening on 3001');
+    });
+  } catch (error) {
+    console.error('Error initializing server', error);
+    process.exit(0);
+  }
+};
+
+init();
