@@ -1,9 +1,11 @@
 const { Router } = require('express');
 const { validationResult } = require('express-validator');
+const config = require('config');
 
 const User = require('../models/user');
 const { validationLoginForm, validationRegistrationForm } = require('../validators');
-const { authenticate, checkForDuplicateAccount } = require('../services/auth');
+const { authenticate, checkForDuplicateAccount, signToken } = require('../services/auth');
+const { auth } = require('../middlewares');
 
 const api = Router();
 
@@ -22,10 +24,14 @@ api.post('/login', validationLoginForm, async (request, response) => {
 
   try {
     const data = await authenticate(email, password);
+    const token = signToken({
+      user_id: data._id
+    });
+    response.cookie(config.get('AUTH_COOKIE_NAME'), token, { maxAge: 48 * 60 * 60 * 1000 })
     return response.json({
       succes: true,
       message: 'Login successful!',
-      data
+      data: { ...data, token }
     });
   } catch (error) {
     return response.json({
@@ -63,6 +69,13 @@ api.post('/register', validationRegistrationForm, async (request, response) => {
       error: (Array.isArray(error) && error) || [error.message]
     }, 400);
   }
+});
+
+api.get('/me', auth, async (request, response) => {
+  return response.json({
+    success: true,
+    data: request.user
+  });
 });
 
 module.exports = api;
