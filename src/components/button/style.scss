@@ -1,0 +1,23 @@
+button {
+  text-align: center;
+  font-size: 12px;
+  padding: 10px;
+  background: #118aef;
+  outline: none;
+  border: none;
+  color: #ffffff;
+  border-radius: 3px;
+  font-weight: 500;
+  cursor: pointer;
+  &:focus {
+    background: #1b81bf;
+  }
+}
+
+.btn-container {
+    padding: 10px;
+  }
+
+.btn-fw {
+  width: 100%;
+}
