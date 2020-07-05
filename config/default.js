@@ -7,5 +7,5 @@ module.exports = {
     SECRET_KEY: process.env.JWT_SECRET_KEY || 'simplilearn'
   },
   AUTH_COOKIE_NAME: 'x_access_token',
-  AUTH_HEADER_NAME: 'x-access-token',
+  AUTH_HEADER_NAME: 'x-access-token'
 };
