@@ -6,8 +6,6 @@ import TextField from '../../../components/text-field';
 import Button from '../../../components/button';
 import UserContext from '../../../contexts/user';
 
-import './style.scss';
-
 const RegistrationForm = () => {
   const [form, setForm] = useState({
     name: '',
@@ -69,7 +67,6 @@ const RegistrationForm = () => {
         <TextField
           name='name'
           type='text'
-          classes={{ label: 'form-label' }}
           value={form.name}
           placeholder='Enter Name'
           onChange={handleFormChange}
@@ -77,7 +74,6 @@ const RegistrationForm = () => {
         <TextField
           name='email'
           type='text'
-          classes={{ label: 'form-label' }}
           value={form.email}
           placeholder='Enter Email'
           onChange={handleFormChange}
@@ -85,7 +81,6 @@ const RegistrationForm = () => {
         <TextField
           name='mobileNumber'
           type='text'
-          classes={{ label: 'form-label' }}
           value={form.mobileNumber}
           placeholder='Enter Mobile Number'
           onChange={handleFormChange}
@@ -93,7 +88,6 @@ const RegistrationForm = () => {
         <TextField
           name='password'
           type='password'
-          classes={{ label: 'form-label' }}
           value={form.password}
           placeholder='Enter Password'
           onChange={handleFormChange}

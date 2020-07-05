@@ -6,8 +6,6 @@ import TextField from '../../../components/text-field';
 import Button from '../../../components/button';
 import UserContext from '../../../contexts/user';
 
-import './style.scss';
-
 const LoginForm = () => {
   const [form, setForm] = useState({
     email: '',
@@ -67,15 +65,13 @@ const LoginForm = () => {
         <TextField
           name='email'
           type='text'
-          classes={{ label: 'form-label' }}
           value={form.email}
-          placeholder='Enter Email / Mobile Number'
+          placeholder='Enter Email'
           onChange={handleFormChange}
         />
         <TextField
           name='password'
           type='password'
-          classes={{ label: 'form-label' }}
           value={form.password}
           placeholder='Enter Password'
           onChange={handleFormChange}
