@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const config = require('config');
 const path = require('path');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const api = require('./server/api');
 
@@ -19,6 +20,10 @@ const init = async () => {
     app.use([
       bodyParser.json(),
       bodyParser.urlencoded({ extended: false }),
+      cors({
+        credentials: true,
+        origin: true
+      }),
       cookieParser(),
       helmet(),
       morgan('combined')
