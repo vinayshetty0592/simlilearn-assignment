@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 import Button from '../../components/button';
@@ -8,14 +9,27 @@ import UserContext from '../../contexts/user';
 import './style.scss';
 
 const Profile = () => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const { name, email, mobileNumber } = user.data;
+
+  const history = useHistory();
+
+  useEffect(() => {
+    if (!user.isLoggedIn) {
+      history.push('/login');
+    }
+  }, [history, user.isLoggedIn]);
 
   const handleLogout = async () => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/logout`, {}, { withCredentials: true });
+
       if (response.data.success) {
-        window.location = '/';
+        setUser({
+          isLoggedIn: false,
+          data: {}
+        });
+        history.push('/login');
       } else {
         alert('Failed to logout. Try again.');
       }

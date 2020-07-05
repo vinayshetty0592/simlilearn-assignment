@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import Login from './pages/login';
@@ -27,8 +27,7 @@ const App = () => {
           });
           setIsLoading(false);
         })
-        .catch(error => {
-          console.error(error.message);
+        .catch(() => {
           setUser({
             isLoggedIn: false,
             data: {}
@@ -48,18 +47,14 @@ const App = () => {
             <Loader /> :
             <BrowserRouter>
               {
-                user.isLoggedIn ?
-                  <Switch>
-                    <Route exact path='/' component={Profile} />
-                    <Route path='/profile' component={Profile} />
-                    <Route component={Page404} />
-                  </Switch> :
-                  <Switch>
-                    <Route exact path='/' component={Login} />
-                    <Route path='/login' component={Login} />
-                    <Route path='/register' component={Registration} />
-                    <Route component={Page404} />
-                  </Switch>
+                <Switch>
+                  <Route exact path='/' component={Profile} />
+                  <Route path='/profile' component={Profile} />
+                  <Route exact path='/' component={Login} />
+                  <Route path='/login' component={Login} />
+                  <Route path='/register' component={Registration} />
+                  <Route component={Page404} />
+                </Switch>
               }
             </BrowserRouter>
         }
