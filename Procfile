@@ -1,1 +1,1 @@
-web:npm run servert:prod:start
+web: npm run servert:prod:start
