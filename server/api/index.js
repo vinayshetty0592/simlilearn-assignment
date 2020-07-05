@@ -12,33 +12,33 @@ const api = Router();
 api.post('/login', validationLoginForm, async (request, response) => {
   const result = validationResult(request).formatWith(({ msg }) => msg);
   const { email, password } = request.body;
-  if (!result.isEmpty()) {
-    return response.json({
+  try {
+    if (!result.isEmpty()) {
+      throw result.array();
+    }
+
+    try {
+      const data = await authenticate(email, password);
+      const token = signToken({
+        user_id: data._id
+      });
+      response.cookie(config.get('AUTH_COOKIE_NAME'), token, { maxAge: 48 * 60 * 60 * 1000 });
+      return response.json({
+        success: true,
+        message: 'Login successful!',
+        data: { ...data, token }
+      });
+    } catch (error) {
+      throw error.message.split();
+    }
+  } catch (error) {
+    response.json({
       success: false,
-      message: 'Login failed',
+      message: 'Login failed!',
       data: {
-        errors: result.array()
+        errors: (Array.isArray(error) && error) || [error.message]
       }
     }, 400);
-  }
-
-  try {
-    const data = await authenticate(email, password);
-    const token = signToken({
-      user_id: data._id
-    });
-    response.cookie(config.get('AUTH_COOKIE_NAME'), token, { maxAge: 48 * 60 * 60 * 1000 });
-    return response.json({
-      success: true,
-      message: 'Login successful!',
-      data: { ...data, token }
-    });
-  } catch (error) {
-    return response.json({
-      success: false,
-      message: error.message,
-      data: {}
-    }, 401);
   }
 });
 
@@ -71,7 +71,9 @@ api.post('/register', validationRegistrationForm, async (request, response) => {
     response.json({
       success: false,
       message: 'Registration failed!',
-      error: (Array.isArray(error) && error) || [error.message]
+      data: {
+        errors: (Array.isArray(error) && error) || [error.message]
+      }
     }, 400);
   }
 });
