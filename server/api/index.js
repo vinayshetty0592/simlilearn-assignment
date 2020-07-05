@@ -53,10 +53,15 @@ api.post('/register', validationRegistrationForm, async (request, response) => {
       const user = new User({ ...request.body });
       await user.save();
       const { password, ...userResponse } = user.toObject();
+      const token = signToken({
+        user_id: userResponse._id
+      });
+      response.cookie(config.get('AUTH_COOKIE_NAME'), token, { maxAge: 48 * 60 * 60 * 1000 });
       response.json({
         success: true,
         data: {
-          user: userResponse
+          ...userResponse,
+          token
         }
       }, 201);
     } catch (error) {
