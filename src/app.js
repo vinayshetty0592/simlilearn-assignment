@@ -17,23 +17,27 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios(`${process.env.REACT_APP_API_HOST}/api/me`, { withCredentials: true })
-      .then(response => response.data)
-      .then(({ success, data }) => {
-        setUser({
-          isLoggedIn: success,
-          user: data
+    if (document.cookie.includes('x_access_token')) {
+      axios(`${process.env.REACT_APP_API_HOST}/api/me`, { withCredentials: true })
+        .then(response => response.data)
+        .then(({ success, data }) => {
+          setUser({
+            isLoggedIn: success,
+            user: data
+          });
+          setIsLoading(false);
+        })
+        .catch(error => {
+          console.error(error.message);
+          setUser({
+            isLoggedIn: false,
+            user: {}
+          });
+          setIsLoading(false);
         });
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error(error.message);
-        setUser({
-          isLoggedIn: false,
-          user: {}
-        });
-        setIsLoading(false);
-      })
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   return (
