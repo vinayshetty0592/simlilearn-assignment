@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import TextField from '../../../components/text-field';
 import Button from '../../../components/button';
+import Loader from '../../../components/loader';
 import UserContext from '../../../contexts/user';
 import { isEmpty, isValidEmailId } from '../../../utils/common';
 
@@ -18,6 +19,8 @@ const LoginForm = () => {
     title: '',
     messages: [],
   });
+  const [isLoading, setIsLoading] = useState(false);
+
   const { user, setUser } = useContext(UserContext);
 
   const history = useHistory();
@@ -55,6 +58,7 @@ const LoginForm = () => {
       const errors = validateForm();
       if (!errors) {
         resetErrors();
+        setIsLoading(true);
         const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/login`, form, { withCredentials: true });
         const { success, data } = response.data;
         if (success) {
@@ -63,15 +67,18 @@ const LoginForm = () => {
             isLoggedIn: true,
             data
           });
+          setIsLoading(false);
           history.push('/profile');
         }
       } else {
+        setIsLoading(false);
         setForm({
           ...form,
           ...errors
         });
       }
     } catch (error) {
+      setIsLoading(false);
       const { data, message } = error.response.data;
       setError({
         title: message,
@@ -81,44 +88,47 @@ const LoginForm = () => {
   };
 
   return (
-    <div className='box'>
-      <h1 className='margin-0 text-center'>Login</h1>
-      {
-        (error.messages.length > 0 || error.title.length > 0) &&
-        <div className='errors'>
-          {error.title.length > 0 && <h4 className='margin-0 title'>{error.title}</h4>}
-          {
-            error.messages.length > 0 &&
-            <ul className='margin-0'>
-              {error.messages.map((message, index) => <li key={index}>{message}</li>)}
-            </ul>
-          }
+    <>
+      {isLoading && <Loader title='Logging In...' />}
+      <div className='box'>
+        <h1 className='margin-0 text-center'>Login</h1>
+        {
+          (error.messages.length > 0 || error.title.length > 0) &&
+          <div className='errors'>
+            {error.title.length > 0 && <h4 className='margin-0 title'>{error.title}</h4>}
+            {
+              error.messages.length > 0 &&
+              <ul className='margin-0'>
+                {error.messages.map((message, index) => <li key={index}>{message}</li>)}
+              </ul>
+            }
+          </div>
+        }
+        <form className='form'>
+          <TextField
+            name='email'
+            type='text'
+            value={form.email}
+            placeholder='Enter Email'
+            onChange={handleFormChange}
+            error={form.emailError}
+          />
+          <TextField
+            name='password'
+            type='password'
+            value={form.password}
+            placeholder='Enter Password'
+            onChange={handleFormChange}
+            error={form.passwordError}
+          />
+          <Button className='btn-fw' type='button' onClick={handleFormSubmit}>Login</Button>
+        </form>
+        <div className='text-center'>
+          <span>Don't have an account? </span>
+          <Link to='/register'>Register Now</Link>
         </div>
-      }
-      <form className='form'>
-        <TextField
-          name='email'
-          type='text'
-          value={form.email}
-          placeholder='Enter Email'
-          onChange={handleFormChange}
-          error={form.emailError}
-        />
-        <TextField
-          name='password'
-          type='password'
-          value={form.password}
-          placeholder='Enter Password'
-          onChange={handleFormChange}
-          error={form.passwordError}
-        />
-        <Button className='btn-fw' type='button' onClick={handleFormSubmit}>Login</Button>
-      </form>
-      <div className='text-center'>
-        <span>Don't have an account? </span>
-        <Link to='/register'>Register Now</Link>
       </div>
-    </div>
+    </>
   );
 };
 
