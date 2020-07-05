@@ -6,9 +6,11 @@ import TextField from '../../../components/text-field';
 import Button from '../../../components/button';
 import UserContext from '../../../contexts/user';
 
-const LoginForm = () => {
+const RegistrationForm = () => {
   const [form, setForm] = useState({
+    name: '',
     email: '',
+    mobileNumber: '',
     password: ''
   });
   const [error, setError] = useState({
@@ -26,7 +28,7 @@ const LoginForm = () => {
 
   const handleFormSubmit = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/login`, form, { withCredentials: true });
+      const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/register`, form, { withCredentials: true });
       const { success, data } = response.data;
       if (success) {
         setUser({
@@ -48,7 +50,7 @@ const LoginForm = () => {
 
   return (
     <div className='box'>
-      <h1 className='margin-0 text-center'>Login</h1>
+      <h1 className='margin-0 text-center'>Register</h1>
       {
         (error.messages.length > 0 || error.title.length > 0) &&
         <div className='errors'>
@@ -63,10 +65,24 @@ const LoginForm = () => {
       }
       <form className='form'>
         <TextField
+          name='name'
+          type='text'
+          value={form.name}
+          placeholder='Enter Name'
+          onChange={handleFormChange}
+        />
+        <TextField
           name='email'
           type='text'
           value={form.email}
           placeholder='Enter Email'
+          onChange={handleFormChange}
+        />
+        <TextField
+          name='mobileNumber'
+          type='text'
+          value={form.mobileNumber}
+          placeholder='Enter Mobile Number'
           onChange={handleFormChange}
         />
         <TextField
@@ -76,14 +92,14 @@ const LoginForm = () => {
           placeholder='Enter Password'
           onChange={handleFormChange}
         />
-        <Button className='btn-fw' type='button' onClick={handleFormSubmit}>Login</Button>
+        <Button className='btn-fw' type='button' onClick={handleFormSubmit}>Register</Button>
       </form>
       <div className='text-center'>
-        <span>Don't have an account? </span>
-        <Link to='/register'>Register Now</Link>
+        <span>Already have an account? </span>
+        <Link to='/login'>Login</Link>
       </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default RegistrationForm;

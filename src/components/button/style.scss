@@ -8,6 +8,8 @@ button {
   color: #ffffff;
   border-radius: 3px;
   font-weight: 500;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2);
+  font-weight: bold;
   cursor: pointer;
   &:focus {
     background: #1b81bf;
