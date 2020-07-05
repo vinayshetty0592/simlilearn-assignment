@@ -5,13 +5,18 @@ import axios from 'axios';
 import TextField from '../../../components/text-field';
 import Button from '../../../components/button';
 import UserContext from '../../../contexts/user';
+import { isEmpty, isValidEmailId, isValidMobileNumber } from '../../../utils/common';
 
 const RegistrationForm = () => {
   const [form, setForm] = useState({
     name: '',
+    nameError: '',
     email: '',
+    emailError: '',
     mobileNumber: '',
-    password: ''
+    mobileNumberError: '',
+    password: '',
+    passwordError: ''
   });
   const [error, setError] = useState({
     title: '',
@@ -21,6 +26,43 @@ const RegistrationForm = () => {
 
   const history = useHistory();
 
+  const validateForm = () => {
+    const errors = {
+    };
+
+    if (isEmpty(form.name)) {
+      errors.nameError = 'Please enter Name';
+    }
+
+    if (!isValidEmailId(form.email)) {
+      errors.emailError = 'Please enter valid Email';
+    }
+
+    if (isEmpty(form.mobileNumber)) {
+      errors.mobileNumberError = 'Please enter Mobile Number';
+    }
+
+    if (!errors.mobileNumberError && !isValidMobileNumber(form.mobileNumber)) {
+      errors.mobileNumberError = 'Please enter valid Mobile Number';
+    }
+
+    if (isEmpty(form.password)) {
+      errors.passwordError = 'Please enter Password';
+    }
+
+    return isEmpty(errors) ? false : errors;
+  };
+
+  const resetErrors = () => {
+    setForm({
+      ...form,
+      emailError: '',
+      nameError: '',
+      mobileNumberError: '',
+      passwordError: ''
+    });
+  };
+
   const handleFormChange = (event) => {
     const { name: field, value } = event.target;
     setForm({ ...form, [field]: value });
@@ -28,16 +70,24 @@ const RegistrationForm = () => {
 
   const handleFormSubmit = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/register`, form, { withCredentials: true });
-      const { success, data } = response.data;
-      if (success) {
-        setUser({
-          ...user,
-          isLoggedIn: true,
-          data
-        });
-        history.push('/profile');
+      const errors = validateForm();
+      if (!errors) {
+        resetErrors();
+        const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/register`, form, { withCredentials: true });
+        const { success, data } = response.data;
+        if (success) {
+          setUser({
+            ...user,
+            isLoggedIn: true,
+            data
+          });
+          history.push('/profile');
+        }
       } else {
+        setForm({
+          ...form,
+          ...errors
+        });
       }
     } catch (error) {
       const { data, message } = error.response.data;
@@ -70,6 +120,7 @@ const RegistrationForm = () => {
           value={form.name}
           placeholder='Enter Name'
           onChange={handleFormChange}
+          error={form.nameError}
         />
         <TextField
           name='email'
@@ -77,6 +128,7 @@ const RegistrationForm = () => {
           value={form.email}
           placeholder='Enter Email'
           onChange={handleFormChange}
+          error={form.emailError}
         />
         <TextField
           name='mobileNumber'
@@ -84,6 +136,7 @@ const RegistrationForm = () => {
           value={form.mobileNumber}
           placeholder='Enter Mobile Number'
           onChange={handleFormChange}
+          error={form.mobileNumberError}
         />
         <TextField
           name='password'
@@ -91,6 +144,7 @@ const RegistrationForm = () => {
           value={form.password}
           placeholder='Enter Password'
           onChange={handleFormChange}
+          error={form.passwordError}
         />
         <Button className='btn-fw' type='button' onClick={handleFormSubmit}>Register</Button>
       </form>
