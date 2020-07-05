@@ -12,7 +12,7 @@ import { UserProvider } from './contexts/user';
 const App = () => {
   const [user, setUser] = useState({
     isLoggedIn: false,
-    user: {}
+    data: {}
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -23,7 +23,7 @@ const App = () => {
         .then(({ success, data }) => {
           setUser({
             isLoggedIn: success,
-            user: data
+            data
           });
           setIsLoading(false);
         })
@@ -31,7 +31,7 @@ const App = () => {
           console.error(error.message);
           setUser({
             isLoggedIn: false,
-            user: {}
+            data: {}
           });
           setIsLoading(false);
         });

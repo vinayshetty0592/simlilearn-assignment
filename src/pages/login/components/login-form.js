@@ -28,16 +28,13 @@ const LoginForm = () => {
 
   const handleFormSubmit = async () => {
     try {
-
       const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/login`, form, { withCredentials: true });
       const { success, data } = response.data;
       if (success) {
         setUser({
           ...user,
           isLoggedIn: true,
-          user: {
-            ...data
-          }
+          data
         });
         history.push('/profile');
       } else {

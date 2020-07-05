@@ -71,6 +71,15 @@ api.post('/register', validationRegistrationForm, async (request, response) => {
   }
 });
 
+api.post('/logout', auth, async (request, response) => {
+  response.clearCookie(config.get('AUTH_COOKIE_NAME'));
+  return response.json({
+    success: true,
+    message: 'You have been logged out.',
+    data: {}
+  });
+});
+
 api.get('/me', auth, async (request, response) => {
   return response.json({
     success: true,
