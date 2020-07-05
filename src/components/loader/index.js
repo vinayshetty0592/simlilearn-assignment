@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './style.scss';
 
@@ -11,6 +12,10 @@ const Loader = ({ title }) => {
       </span>
     </div>
   );
+};
+
+Loader.propTypes = {
+  title: PropTypes.string
 };
 
 export default Loader;
