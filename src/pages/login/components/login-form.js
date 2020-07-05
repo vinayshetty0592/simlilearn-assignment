@@ -35,9 +35,7 @@ const LoginForm = () => {
         setUser({
           ...user,
           isLoggedIn: true,
-          user: {
-            ...data
-          }
+          data
         });
         history.push('/profile');
       } else {
