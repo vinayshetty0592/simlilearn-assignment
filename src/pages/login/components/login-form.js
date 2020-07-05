@@ -5,11 +5,14 @@ import axios from 'axios';
 import TextField from '../../../components/text-field';
 import Button from '../../../components/button';
 import UserContext from '../../../contexts/user';
+import { isEmpty, isValidEmailId } from '../../../utils/common';
 
 const LoginForm = () => {
   const [form, setForm] = useState({
     email: '',
-    password: ''
+    emailError: '',
+    password: '',
+    passwordError: ''
   });
   const [error, setError] = useState({
     title: '',
@@ -19,6 +22,29 @@ const LoginForm = () => {
 
   const history = useHistory();
 
+  const validateForm = () => {
+    const errors = {
+    };
+
+    if (!isValidEmailId(form.email)) {
+      errors.emailError = 'Please enter valid Email';
+    }
+
+    if (isEmpty(form.password)) {
+      errors.passwordError = 'Please enter Password';
+    }
+
+    return isEmpty(errors) ? false : errors;
+  };
+
+  const resetErrors = () => {
+    setForm({
+      ...form,
+      emailError: '',
+      passwordError: ''
+    });
+  };
+
   const handleFormChange = (event) => {
     const { name: field, value } = event.target;
     setForm({ ...form, [field]: value });
@@ -26,16 +52,24 @@ const LoginForm = () => {
 
   const handleFormSubmit = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/login`, form, { withCredentials: true });
-      const { success, data } = response.data;
-      if (success) {
-        setUser({
-          ...user,
-          isLoggedIn: true,
-          data
-        });
-        history.push('/profile');
+      const errors = validateForm();
+      if (!errors) {
+        resetErrors();
+        const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/login`, form, { withCredentials: true });
+        const { success, data } = response.data;
+        if (success) {
+          setUser({
+            ...user,
+            isLoggedIn: true,
+            data
+          });
+          history.push('/profile');
+        }
       } else {
+        setForm({
+          ...form,
+          ...errors
+        });
       }
     } catch (error) {
       const { data, message } = error.response.data;
@@ -68,6 +102,7 @@ const LoginForm = () => {
           value={form.email}
           placeholder='Enter Email'
           onChange={handleFormChange}
+          error={form.emailError}
         />
         <TextField
           name='password'
@@ -75,6 +110,7 @@ const LoginForm = () => {
           value={form.password}
           placeholder='Enter Password'
           onChange={handleFormChange}
+          error={form.passwordError}
         />
         <Button className='btn-fw' type='button' onClick={handleFormSubmit}>Login</Button>
       </form>
