@@ -40,3 +40,15 @@ a {
 .margin-0 {
   margin: 0 !important;
 }
+
+.errors {
+  margin-top: 5px;
+  background-color: #ffdddd!important;
+  color: #000000;
+  border: 1px solid #ccc!important;
+  padding: 10px;
+  .title {
+    padding: 5px;
+  }
+}
+

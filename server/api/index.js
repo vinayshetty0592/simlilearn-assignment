@@ -10,11 +10,11 @@ const { auth } = require('../middlewares');
 const api = Router();
 
 api.post('/login', validationLoginForm, async (request, response) => {
-  const result = validationResult(request);
+  const result = validationResult(request).formatWith(({ msg }) => msg);
   const { email, password } = request.body;
   if (!result.isEmpty()) {
     return response.json({
-      succes: false,
+      success: false,
       message: 'Login failed',
       data: {
         errors: result.array()
@@ -27,15 +27,15 @@ api.post('/login', validationLoginForm, async (request, response) => {
     const token = signToken({
       user_id: data._id
     });
-    response.cookie(config.get('AUTH_COOKIE_NAME'), token, { maxAge: 48 * 60 * 60 * 1000 })
+    response.cookie(config.get('AUTH_COOKIE_NAME'), token, { maxAge: 48 * 60 * 60 * 1000 });
     return response.json({
-      succes: true,
+      success: true,
       message: 'Login successful!',
       data: { ...data, token }
     });
   } catch (error) {
     return response.json({
-      succes: false,
+      success: false,
       message: error.message,
       data: {}
     }, 401);
