@@ -18,6 +18,9 @@
     &:focus {
       outline: none;
     }
+    &:disabled {
+      cursor: not-allowed;
+    }
   }
   .has-error {
     border: 1px solid #ff0033;
