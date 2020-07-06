@@ -34,7 +34,7 @@ const init = async () => {
 
 
     app.listen(config.get('PORT'), () => {
-      console.log('App Listening on 3001');
+      console.log(`App Listening on ${config.get('PORT')}`);
     });
   } catch (error) {
     console.error('Error initializing server', error);
