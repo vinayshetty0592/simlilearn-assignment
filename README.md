@@ -30,6 +30,6 @@ Runs node server in development environment on port `3001` with reload on file c
 
 ### `npm run server:prod:start`
 
-Runs node server in on port `3001`. To change the port set environment variable `PORT`.
+Runs node server on port `3001`. To change the port set environment variable `PORT`.
 
 NOTE: Set `DATABASE_URL` environment variable with the Mongodb database URL.
